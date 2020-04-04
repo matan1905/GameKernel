@@ -14,7 +14,7 @@ commands ={}
 var eventTable = {}
 
 //when a module decides to prompt the user, it is saved in here, that way, the user can answer and the result will transfered to that module instead of default
-var pendingPrompts =[]
+var pendingInputs =[]
 
 $( document ).ready(function() {
     $('.console-input').on('keydown', async function(event) {
@@ -35,8 +35,8 @@ $( document ).ready(function() {
         cursor = -1
         let text = input()
         cmdHistory.unshift(text)
-        if(pendingPrompts.length > 0) {
-          await pendingPrompts.pop()(text);
+        if(pendingInputs.length > 0) {
+          await pendingInputs.pop()(text);
         }
         else{await GK.processCommand(text)}
 
@@ -81,10 +81,9 @@ GK.fireEvent =function (name,details={}){
   eventTable[name](details);
 }
 
-GK.prompt = function (callback){
+GK.nextInput = function (callback){
   return new Promise(resolve => {
-    //  resolve('resolved');
-      pendingPrompts.push(resolve);
+      pendingInputs.push(resolve);
   });
 }
 
